@@ -9,6 +9,10 @@ type SideLinks = {
 
 const links: SideLinks[] = [
   {
+    name: 'Homepage',
+    url: '/',
+  },
+  {
     name: 'Clients',
     url: '/clients'
   },

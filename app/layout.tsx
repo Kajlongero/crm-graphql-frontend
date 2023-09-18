@@ -1,5 +1,6 @@
-import './globals.css';
 import { Metadata } from 'next';
+import ContextApolloProvider from './context/ApolloContext';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'CRM - Customer Administration',
@@ -7,13 +8,16 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children } : { children: React.ReactNode }) {
+
   return (
-    <html lang="en">
-      <body>
-        <main>
-          {children}
-        </main>
-      </body>
-    </html>
+    <ContextApolloProvider>
+      <html lang="en">
+        <body>
+          <main>
+            {children}
+          </main>
+        </body>
+      </html>
+    </ContextApolloProvider>
   )
 }
