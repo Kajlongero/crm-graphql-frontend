@@ -50,7 +50,7 @@ export default function LoginForm () {
             navigate.push('/');
           }
         })
-
+        navigate.push('/');
       }catch(e: any){
         Swal.fire({
           text: `${e.message.charAt(0).toUpperCase()}${e.message.substring(1, e.message.length)}`,
