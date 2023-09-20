@@ -4,6 +4,6 @@ export interface Client {
   lastName: string;
   company: string;
   email: string;
-  phone: string;
-  seller: string;
+  phone?: string;
+  seller?: string;
 }

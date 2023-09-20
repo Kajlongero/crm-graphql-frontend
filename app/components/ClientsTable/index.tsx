@@ -1,6 +1,7 @@
 'use client';
 import { Client } from "@/app/interfaces/client-interface";
 import { gql, useQuery } from "@apollo/client";
+import TableRow from "../TableRow";
 
 const CLIENTS_QUERY = gql`
 query getClientsBySeller {
@@ -11,6 +12,7 @@ query getClientsBySeller {
     company
     email
     phone
+    seller
   }
 }
 `;
@@ -24,17 +26,15 @@ export default function ClientsTable () {
       <td className="border px-4 py-2">Loading...</td>
       <td className="border px-4 py-2">Loading...</td>
       <td className="border px-4 py-2">Loading...</td>
+      <td className="border px-4 py-2">Loading...</td>
+      <td className="border px-4 py-2">Loading...</td>
     </tr>
   )
 
   return (
     <>
-      {data.getClientsBySeller.map(({ id, firstName, lastName, email, company }: Client) => (
-        <tr key={id}>
-          <td className="border px-4 py-2">{firstName} {lastName}</td>
-          <td className="border px-4 py-2">{company}</td>
-          <td className="border px-4 py-2">{email}</td>
-        </tr>
+      {data.getClientsBySeller.map((data: Client) => (
+        <TableRow key={data.id} {...data}/>
       ))}
     </>
   )
