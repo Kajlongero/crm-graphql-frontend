@@ -6,28 +6,7 @@ import { User } from "./interfaces/user-interface";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Link from "next/link";
-
-type Clients = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  company: string;
-  email: string;
-  phone: string;
-}
-
-const CLIENTS_QUERY = gql`
-query GetClientsBySeller {
-  getClientsBySeller {
-    id
-    firstName
-    lastName
-    company
-    email
-    phone
-  }
-}
-`;
+import ClientsTable from "./components/ClientsTable";
 
 const GET_USER_BY_TOKEN_QUERY = gql`
   query getUserByToken($token: String!) {
@@ -47,22 +26,13 @@ export default async function Homepage() {
 
   if(!authToken) redirect('/login');
 
-  const { data } = await customClientWithHeaders({
-    authorization: authToken ? authToken.value : '',
-  })
-  .query({
-    query: CLIENTS_QUERY,
-  });
-
   const { data: { getUserByToken: user } } = await customClientWithHeaders({}).query({
     query: GET_USER_BY_TOKEN_QUERY,
     variables: {
       token: authToken?.value,
     }
   });
-  
-  const userData: User = user;
-  const clients: Clients[] = data.getClientsBySeller;
+  const userData: User = user;  
 
   return (
     <div className="flex bg-gray-200 min-h-screen">
@@ -87,13 +57,7 @@ export default async function Homepage() {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {clients.map(({ id, firstName, lastName, email, company }) => (
-              <tr key={id}>
-                <td className="border px-4 py-2">{firstName} {lastName}</td>
-                <td className="border px-4 py-2">{company}</td>
-                <td className="border px-4 py-2">{email}</td>
-              </tr>
-            ))}
+            <ClientsTable />
           </tbody>
         </table>
       </section>

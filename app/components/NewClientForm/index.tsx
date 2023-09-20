@@ -1,11 +1,109 @@
 'use client';
+import { Client } from '@/app/interfaces/client-interface';
+import { gql, useMutation } from '@apollo/client';
+import { useFormik } from 'formik'; 
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+import * as Yup from 'yup';
+
+const ADD_NEW_CLIENT = gql`
+  mutation addClient($input: ClientInput!) {
+    addClient(input: $input) {
+      id
+      firstName
+      lastName
+      company
+      email
+      phone
+      seller
+    }
+  }
+`;
+
+const CLIENTS_QUERY = gql`
+query getClientsBySeller {
+  getClientsBySeller {
+    id
+    firstName
+    lastName
+    company
+    email
+    phone
+  }
+}
+`;
 
 export default function NewClientForm () {
+
+  const [ addClient ] = useMutation(ADD_NEW_CLIENT, {
+    update(cache, {data: { addClient }}) {
+      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_QUERY }) as any;
+      const clients: Client[] = [...getClientsBySeller, addClient];
+
+      cache.writeQuery({
+        query: CLIENTS_QUERY,
+        data: {
+          getClientsBySeller: [...clients]
+        }
+      })
+    },
+    
+  });
+  const nav = useRouter();
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      company: '',
+      email: '',
+      phone: '',
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required('First name is required'),
+      lastName: Yup.string().required('Last name is required'),
+      company: Yup.string().required('Company is required'),
+      email: Yup.string().email('Email not valid').required('Email is required'),
+      phone: Yup.string()
+    }), 
+    onSubmit: async ({ firstName, lastName, email, company, phone }) => {
+      try{
+        const { data } = await addClient({
+          variables: {
+            input: {
+              firstName,
+              lastName,
+              email,
+              company,
+              phone: phone ? phone : null,
+            }
+          }
+        });
+        console.log(data.addClient);
+
+        Swal.fire({
+          text: 'Client created successfully',
+          icon: 'success',
+          timer: 3500,
+        });
+        nav.push('/');
+
+      }catch(e: any){
+        Swal.fire({
+          text: e.message,
+          icon: 'error',
+          timer: 3500,
+        })
+      }
+    }
+  }) 
+
   return (
     <div className="flex justify-center mt-5">
       <div className="flex justify-center w-full max-w-lg">
         <form
           className="bg-white shadow-md px-8 pt-6 pb-8 mb-4 max-w-sm"
+          onSubmit={formik.handleSubmit}
         > 
           <label 
             className="block text-gray-700 font-bold mb-2 text-lg"
@@ -13,12 +111,20 @@ export default function NewClientForm () {
           > 
             First name
           </label>
+          {formik.touched.firstName && formik.errors.firstName && (
+            <div className='my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4'>
+              <p className='text-black'>Error: {formik.errors.firstName}</p>
+            </div>
+          )}
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="firstName"
             name="firstName"
             type="text"
             placeholder="First name"
+            value={formik.values.firstName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
           <label 
             className="block text-gray-700 font-bold mb-2 text-lg mt-4"
@@ -26,17 +132,31 @@ export default function NewClientForm () {
           > 
             Last name
           </label>
+          {formik.touched.lastName && formik.errors.lastName && (
+            <div className='my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4'>
+              <p className='text-black'>Error: {formik.errors.lastName}</p>
+            </div>
+          )}
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="lastName"
             name="lastName"
             type="text"
             placeholder="Last name"
+            value={formik.values.lastName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+
           />
           <label 
             className="block text-gray-700 font-bold mb-2 text-lg mt-4"
             htmlFor="input-last-name"
           > 
+          {formik.touched.company && formik.errors.company && (
+            <div className='my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4'>
+              <p className='text-black'>Error: {formik.errors.company}</p>
+            </div>
+          )}
             Company
           </label>
           <input
@@ -45,11 +165,20 @@ export default function NewClientForm () {
             name="company"
             type="text"
             placeholder="Company"
+            value={formik.values.company}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+
           />
           <label 
             className="block text-gray-700 font-bold mb-2 text-lg mt-4"
             htmlFor="input-last-name"
           > 
+          {formik.touched.email && formik.errors.email && (
+            <div className='my-2 bg-red-100 border-l-4 border-red-500 text-red-700 p-4'>
+              <p className='text-black'>Error: {formik.errors.email}</p>
+            </div>
+          )}
             Email
           </label>
           <input
@@ -58,6 +187,10 @@ export default function NewClientForm () {
             name="email"
             type="text"
             placeholder="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+
           />
           <label 
             className="block text-gray-700 font-bold mb-2 text-lg mt-4"
@@ -71,6 +204,10 @@ export default function NewClientForm () {
             name="phone"
             type="text"
             placeholder="Phone (optional)"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+
           />
           <input 
             type="submit"
