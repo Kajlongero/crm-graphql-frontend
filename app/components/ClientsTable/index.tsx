@@ -1,7 +1,7 @@
 'use client';
 import { Client } from "@/app/interfaces/client-interface";
 import { gql, useQuery } from "@apollo/client";
-import TableRow from "../TableRow";
+import ClientsTableRow from "../ClientsTableRow";
 
 const CLIENTS_QUERY = gql`
 query getClientsBySeller {
@@ -34,7 +34,7 @@ export default function ClientsTable () {
   return (
     <>
       {data.getClientsBySeller.map((data: Client) => (
-        <TableRow key={data.id} {...data}/>
+        <ClientsTableRow key={data.id} {...data}/>
       ))}
     </>
   )

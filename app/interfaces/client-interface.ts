@@ -7,3 +7,5 @@ export interface Client {
   phone?: string;
   seller?: string;
 }
+
+export type ClientShorted = Omit<Client, 'lastName' | 'company' | 'email' | 'phone' | 'seller'>

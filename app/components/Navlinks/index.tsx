@@ -9,12 +9,8 @@ type SideLinks = {
 
 const links: SideLinks[] = [
   {
-    name: 'Homepage',
-    url: '/',
-  },
-  {
     name: 'Clients',
-    url: '/clients'
+    url: '/',
   },
   {
     name: 'Orders',
@@ -25,7 +21,7 @@ const links: SideLinks[] = [
     url: '/products'
   },
   {
-    name: 'Log in',
+    name: 'Log out',
     url: '/login',
   }
 ]

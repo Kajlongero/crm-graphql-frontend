@@ -20,15 +20,15 @@ query getClientsBySeller {
 `;
 
 const EDIT_CLIENT_QUERY = gql`
-  mutation updateClient($id: ID!, input: ClientInput) {
+  mutation updateClient($id: ID!, $input: ClientInput) {
     updateClient(id: $id, input: $input) {
       id
       firstName
       lastName
       company
       email
-      seller
       phone
+      seller
     }
   }
 `;
@@ -39,40 +39,44 @@ export default function EditClientForm ({ ...props }: Client) {
 
   const [ updateClient ] = useMutation(EDIT_CLIENT_QUERY, {
     update(cache, { data: { updateClient}}) {
-      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_QUERY }) as any;
-      const clients: Client[] = [...getClientsBySeller];
+      try{
+        const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_QUERY }) as any;
+        const clients: Client[] = [...getClientsBySeller];
+  
+        const index = clients.findIndex(({ id }) => id === updateClient.id);
+        clients.splice(index, 1, updateClient)
+  
+        cache.writeQuery({
+          query: CLIENTS_QUERY,
+          data: {
+            getClientsBySeller: [...clients],
+          }
+        })
+      }catch(e){
+        nav.refresh();
+      }
 
-      const index = clients.findIndex(({ id }) => id === updateClient.id);
-
-      cache.writeQuery({
-        query: CLIENTS_QUERY,
-        data: {
-          getClientsBySeller: [...clients.splice(index, 1, updateClient)],
-        }
-      })
     }
   })
 
-  const formik = useFormik<Client>({
+  const formik = useFormik<Omit<Client, 'seller' | 'id'>>({
     initialValues: {
-      id: props.id,
       firstName: props.firstName,
       lastName: props.lastName,
       company: props.company,
       email: props.email,
-      seller: props.seller,
-      phone: props.phone,
+      phone: props.phone ? props.phone : '',
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required('First name is required'), 
       lastName: Yup.string().required('Last name is required'), 
       company: Yup.string().required('Company is required'), 
       email: Yup.string().email('invalid structure').required('Email is required'), 
-      seller: Yup.string(), 
       phone: Yup.string(),
     }),
     onSubmit: async (input) => {
       try{
+        console.log(input);
         const updated = await updateClient({
           variables: {
             id: props.id,
@@ -80,10 +84,9 @@ export default function EditClientForm ({ ...props }: Client) {
           }
         });
 
-        console.log(updated);
-
         Swal.fire({
           icon: 'success',
+          html: 'Updated',
           text: 'Client updated successfully',
           timer: 3500,
         });

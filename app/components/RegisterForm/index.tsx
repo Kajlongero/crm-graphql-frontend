@@ -1,21 +1,10 @@
 'use client';
-import { gql, useMutation } from '@apollo/client';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-
-const NEW_ACCOUNT_QUERY = gql`
-  mutation addUser($input: UserInput!) {
-    addUser(input: $input) {
-      id
-      firstName
-      lastName
-      email
-      createdAt
-    }
-  }
-`
+import { useFormik } from 'formik';
+import { gql, useMutation } from '@apollo/client';
+import { NEW_ACCOUNT_QUERY } from '@/app/querys/auth-query';
+import Swal from 'sweetalert2';
+import * as Yup from 'yup';
 
 export default function RegisterForm() {
 

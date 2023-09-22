@@ -91,7 +91,7 @@ export default function TableRow({ id, email, firstName, lastName, company }: Cl
         </td>
         <td className="border px-4 py-2">
           <button 
-            className="flex items-center justify-center gap-x-2 bg-gray-400 text-white w-full p-2 hover:bg-red-800 rounded text-xs uppercase font-bold"
+            className="flex items-center justify-center gap-x-2 bg-gray-400 text-white w-full p-2 hover:bg-gray-800 rounded text-xs uppercase font-bold"
             onClick={() => handleEditClient(id)}
           >
             Edit

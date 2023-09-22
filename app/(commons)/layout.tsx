@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { gql } from "@apollo/client";
 import { User } from "../interfaces/user-interface";
 import { customClientWithHeaders } from "@/config/apollo-ssr";
+import { isValidToken } from "../utils/isValidToken";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 
@@ -20,13 +21,15 @@ const GET_USER_BY_TOKEN_QUERY = gql`
 
 export default async function CommonsLayout({ children }: { children: React.ReactNode }) {
 
-  const authToken = cookies().get('token');
-  if(!authToken) redirect('/login');
+  const token = cookies().get('token')?.value as string; 
+
+  const valid = await isValidToken(token); 
+  if(!valid) redirect('/login');
 
   const { data: { getUserByToken: user } } = await customClientWithHeaders({}).query({
     query: GET_USER_BY_TOKEN_QUERY,
     variables: {
-      token: authToken?.value,
+      token: token,
     }
   });
   
