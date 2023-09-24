@@ -5,3 +5,7 @@ export interface Product {
   stock: number;
   createdAt: string;
 }
+
+export interface ProductOrder extends Product {
+  quantity: number;
+}

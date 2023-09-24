@@ -14,6 +14,18 @@ export const AUTHENTICATE_QUERY = gql`
   }
 `;
 
+export const GET_USER_BY_TOKEN = gql`
+query getUserByToken($token: String!) {
+  getUserByToken(token: $token) {
+    id
+    firstName
+    lastName
+    email
+    createdAt
+  }
+}
+`;
+
 export const NEW_ACCOUNT_QUERY = gql`
   mutation addUser($input: UserInput!) {
     addUser(input: $input) {

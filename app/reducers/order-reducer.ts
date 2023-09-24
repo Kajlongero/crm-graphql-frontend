@@ -1,6 +1,6 @@
 import { Client } from "../interfaces/client-interface"
 import { OrderReducerInitialState } from "../interfaces/order-context-interface";
-import { Product } from "../interfaces/product-interface";
+import { ProductOrder } from "../interfaces/product-interface";
 
 export const orderReducerInitialState: OrderReducerInitialState = {
   client: {} as Client,
@@ -10,7 +10,9 @@ export const orderReducerInitialState: OrderReducerInitialState = {
 
 type OrderReducerActionTypes = |
 { type: 'SELECT_CLIENT', payload: Client } | 
-{ type: 'SELECT_PRODUCT', payload: Product }
+{ type: 'ADD_OR_REMOVE_PRODUCT', payload: ProductOrder[] } |
+{ type: 'SET_TOTAL', payload: number } |
+{ type: 'REFRESH_ORDER_STATE' };
 
 const orderReducer = (state: typeof orderReducerInitialState, action: OrderReducerActionTypes): OrderReducerInitialState => {
   switch(action.type) {
@@ -21,11 +23,22 @@ const orderReducer = (state: typeof orderReducerInitialState, action: OrderReduc
         client: action.payload,
       };
 
-    case 'SELECT_PRODUCT': 
-
+    case 'ADD_OR_REMOVE_PRODUCT': 
       return {
-        ...state
+        ...state,
+        products: [...action.payload]
       };
+
+    case 'SET_TOTAL': 
+      return {
+        ...state,
+        total: action.payload,
+      }
+
+    case 'REFRESH_ORDER_STATE': 
+      return {
+        ...state,
+      }
 
     default: 
       return state;

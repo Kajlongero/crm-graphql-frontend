@@ -1,47 +1,21 @@
 'use client';
-import { Client } from '@/app/interfaces/client-interface';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useFormik } from 'formik'; 
 import { useRouter } from 'next/navigation';
+import { Client } from '@/app/interfaces/client-interface';
+import { ADD_NEW_CLIENT, CLIENTS_BY_SELLER } from '@/app/querys/clients-query';
 import Swal from 'sweetalert2';
 import * as Yup from 'yup';
-
-const ADD_NEW_CLIENT = gql`
-  mutation addClient($input: ClientInput!) {
-    addClient(input: $input) {
-      id
-      firstName
-      lastName
-      company
-      email
-      phone
-      seller
-    }
-  }
-`;
-
-const CLIENTS_QUERY = gql`
-query getClientsBySeller {
-  getClientsBySeller {
-    id
-    firstName
-    lastName
-    company
-    email
-    phone
-  }
-}
-`;
 
 export default function NewClientForm () {
 
   const [ addClient ] = useMutation(ADD_NEW_CLIENT, {
     update(cache, {data: { addClient }}) {
-      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_QUERY }) as any;
+      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_BY_SELLER }) as any;
       const clients: Client[] = [...getClientsBySeller, addClient];
 
       cache.writeQuery({
-        query: CLIENTS_QUERY,
+        query: CLIENTS_BY_SELLER,
         data: {
           getClientsBySeller: [...clients]
         }

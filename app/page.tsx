@@ -1,24 +1,12 @@
 import { redirect } from "next/navigation";
 import { cookies } from 'next/headers';
-import { gql } from "@apollo/client";
 import { customClientWithHeaders } from "@/config/apollo-ssr";
+import { GET_USER_BY_TOKEN } from "./querys/auth-query";
 import { User } from "./interfaces/user-interface";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Link from "next/link";
 import ClientsTable from "./components/ClientsTable";
-
-const GET_USER_BY_TOKEN_QUERY = gql`
-  query getUserByToken($token: String!) {
-    getUserByToken(token: $token) {
-      id
-      firstName
-      lastName
-      email
-      createdAt
-    }
-  }
-`
 
 export default async function Homepage() {
 
@@ -27,7 +15,7 @@ export default async function Homepage() {
   if(!authToken) redirect('/login');
 
   const { data: { getUserByToken: user } } = await customClientWithHeaders({}).query({
-    query: GET_USER_BY_TOKEN_QUERY,
+    query: GET_USER_BY_TOKEN,
     variables: {
       token: authToken?.value,
     }

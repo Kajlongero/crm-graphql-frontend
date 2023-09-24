@@ -1,29 +1,11 @@
 'use client';
-import { useRouter } from "next/navigation";
-import { Client } from "@/app/interfaces/client-interface";
-import { gql, useMutation } from "@apollo/client";
 import Swal from 'sweetalert2';
+import { useRouter } from "next/navigation";
+import { useMutation } from '@apollo/client';
+import { Client } from "@/app/interfaces/client-interface";
+import { CLIENTS_BY_SELLER, DELETE_CLIENTS_QUERY } from "@/app/querys/clients-query";
 import DeleteIcon from "../SvgIcons/DeleteIcon";
 import EditIcon from "../SvgIcons/EditIcon";
-
-const CLIENTS_QUERY = gql`
-query getClientsBySeller {
-  getClientsBySeller {
-    id
-    firstName
-    lastName
-    company
-    email
-    phone
-  }
-}
-`;
-
-const DELETE_CLIENTS_QUERY = gql`
-mutation deleteClient($id: ID!) {
-  deleteClient(id: $id) 
-}
-`;
 
 export default function TableRow({ id, email, firstName, lastName, company }: Client) {
 
@@ -31,13 +13,13 @@ export default function TableRow({ id, email, firstName, lastName, company }: Cl
 
   const [ deleteClient ] = useMutation(DELETE_CLIENTS_QUERY, {
     update(cache) {
-      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_QUERY }) as any;
+      const { getClientsBySeller } = cache.readQuery({ query: CLIENTS_BY_SELLER }) as any;
       const clients: Client[] = [...getClientsBySeller];
 
       const filteredWithoutDeleted = clients.filter((d) => d.id !== id)
 
       cache.writeQuery({
-        query: CLIENTS_QUERY,
+        query: CLIENTS_BY_SELLER,
         data: {
           getClientsBySeller: [...filteredWithoutDeleted],
         }

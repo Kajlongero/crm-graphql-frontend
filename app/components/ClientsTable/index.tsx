@@ -1,25 +1,12 @@
 'use client';
 import { Client } from "@/app/interfaces/client-interface";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { CLIENTS_BY_SELLER } from "@/app/querys/clients-query";
 import ClientsTableRow from "../ClientsTableRow";
-
-const CLIENTS_QUERY = gql`
-query getClientsBySeller {
-  getClientsBySeller {
-    id
-    firstName
-    lastName
-    company
-    email
-    phone
-    seller
-  }
-}
-`;
 
 export default function ClientsTable () {
 
-  const { data, loading } = useQuery(CLIENTS_QUERY);  
+  const { data, loading } = useQuery(CLIENTS_BY_SELLER);  
 
   if(loading) return (
     <tr>

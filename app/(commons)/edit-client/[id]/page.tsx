@@ -1,8 +1,7 @@
-import { gql } from "@apollo/client";
 import { cookies } from "next/headers";
 import { customClientWithHeaders } from "@/config/apollo-ssr";
-import { redirect } from "next/navigation";
 import { Client } from "@/app/interfaces/client-interface";
+import { GET_CLIENT_BY_ID } from "@/app/querys/clients-query";
 import EditClientForm from "@/app/components/EditClientForm";
 
 type Ctx = {
@@ -11,27 +10,13 @@ type Ctx = {
   }
 }
 
-const CLIENT_QUERY = gql`
-query getClientById($id: ID!) {
-  getClientById(id: $id) {
-    id
-    firstName
-    lastName
-    email
-    phone
-    company
-    seller
-  }
-}
-`;
-
 export default async function EditClient({ params }: Ctx) {
   const id: string = params.id;
 
   const authToken = cookies().get('token')?.value;
 
   const { data } = await customClientWithHeaders({ authorization: authToken as string }).query({
-    query: CLIENT_QUERY,
+    query: GET_CLIENT_BY_ID,
     variables: {
       id: `${id as string}`,
     }

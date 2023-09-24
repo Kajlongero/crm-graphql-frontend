@@ -2,7 +2,7 @@
 import Swal from 'sweetalert2';
 import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
-import { DELETE_PRODUCT_QUERY, EDIT_PRODUCT_QUERY, PRODUCTS_QUERY } from "@/app/querys/products-query";
+import { DELETE_PRODUCT_QUERY, PRODUCTS_QUERY } from "@/app/querys/products-query";
 import { Product } from "@/app/interfaces/product-interface";
 import EditIcon from "../SvgIcons/EditIcon";
 import DeleteIcon from "../SvgIcons/DeleteIcon";

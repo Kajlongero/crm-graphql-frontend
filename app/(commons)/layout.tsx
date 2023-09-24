@@ -22,6 +22,7 @@ const GET_USER_BY_TOKEN_QUERY = gql`
 export default async function CommonsLayout({ children }: { children: React.ReactNode }) {
 
   const token = cookies().get('token')?.value as string; 
+  if(!token) redirect('/login');
 
   const valid = await isValidToken(token); 
   if(!valid) redirect('/login');
