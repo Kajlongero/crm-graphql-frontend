@@ -18,4 +18,6 @@ pnpm dev
 
 After that, you need to connect a mongo database to manage connections and save information
 
+## NOTE: You need to clone the backend repository
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
