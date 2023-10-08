@@ -5,13 +5,13 @@ import { useMutation } from "@apollo/client";
 import { OrderContext } from "@/app/context/OrderContext";
 import { MakeOrder, OrderProducts,  } from "@/app/interfaces/order-interface";
 import { Product, ProductOrder } from "@/app/interfaces/product-interface";
-import { NEW_ORDER } from "@/app/querys/orders-query";
+import { GET_ORDERS_BY_SELLER, NEW_ORDER } from "@/app/querys/orders-query";
 import { PRODUCTS_QUERY } from "@/app/querys/products-query";
 import Swal from 'sweetalert2';
 
 export default function OrderButton () {
 
-  const { orderState: { client, products, total }, refreshOrderState } = useContext(OrderContext);
+  const { orderState: { client, products, total } } = useContext(OrderContext);
 
   const [ newOrder ] = useMutation(NEW_ORDER, {
     update(cache, { data: { newOrder } }) {
@@ -33,7 +33,24 @@ export default function OrderButton () {
         data: {
           getAllProducts: [...changed],
         }
-      })
+      });
+
+      try{
+        const { getOrdersBySeller } = cache.readQuery({ query: GET_ORDERS_BY_SELLER }) as any;
+
+        cache.writeQuery({
+          query: GET_ORDERS_BY_SELLER,
+          data: {
+            getOrdersBySeller: [...getOrdersBySeller, newOrder]
+          }
+        });
+        nav.push('/orders');
+
+      }catch(e){
+        nav.refresh();
+        nav.push('/orders');
+      }
+
     }
   });
   const nav = useRouter();
@@ -60,7 +77,13 @@ export default function OrderButton () {
           input: orderObj,
         }
       });
-      refreshOrderState();
+      Swal.fire({
+        icon: 'success',
+        html: 'Success!',
+        text: `Order ${data.newOrder.id} created successfully`,
+        timer: 3500,
+      })
+      nav.push('/orders');
     }catch(e: any){
       const errorMessage = e.message;
       Swal.fire({

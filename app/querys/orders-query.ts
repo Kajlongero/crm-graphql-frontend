@@ -31,9 +31,10 @@ mutation newOrder($input: OrderInput!) {
     id
     order {
       id
+      name
+      price
       quantity
     }
-    client
     seller
     status
     total
@@ -57,3 +58,8 @@ mutation updateOrderByStatus($id: ID!, $status: OrderStatus!) {
 }
 `;
 
+export const DELETE_ORDER = gql`
+mutation deleteOrder($id: ID!) {
+  deleteOrder(id: $id)
+}
+`

@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from "@apollo/client";
 import { OrderResponse, OrderStatus } from "@/app/interfaces/order-interface";
-import { GET_ORDERS_BY_SELLER, UPDATE_ORDER } from "@/app/querys/orders-query";
+import { GET_ORDERS_BY_SELLER } from "@/app/querys/orders-query";
 import OrdersTableData from "../OrdersTableData";
 
 export default function OrdersTable() {

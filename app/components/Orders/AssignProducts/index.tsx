@@ -1,24 +1,19 @@
 'use client';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { PRODUCTS_QUERY } from '@/app/querys/products-query';
-import { Product, ProductOrder } from '@/app/interfaces/product-interface';
+import { ProductOrder } from '@/app/interfaces/product-interface';
 import { OrderContext } from '@/app/context/OrderContext';
 import Select from 'react-select';
 
 export default function AssignProducts () {
 
-  const { orderState, addOrRemoveProducts } = useContext(OrderContext)
+  const { addOrRemoveProducts } = useContext(OrderContext);
   const { data, loading } = useQuery(PRODUCTS_QUERY);
-  
-  useEffect(() => {
-    console.log(orderState.products);
-  }, [orderState.products])
 
   const selectProduct = (product: ProductOrder[]) => {
   
     const productsOrder: ProductOrder[] = [...product.map((p) => {
-      console.log(p);
       if(!p.quantity) return {...p, quantity: 0};
 
       return p;

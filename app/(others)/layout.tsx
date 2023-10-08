@@ -40,9 +40,9 @@ export default async function CommonsLayout({ children }: { children: React.Reac
   const userData: User = user;
 
   return (
-    <div className="flex bg-gray-200 min-h-screen max-sm:flex max-sm:flex-col">
+    <div className="flex bg-gray-200 min-h-screen">
       <Sidebar />
-      <div className='max-sm:w-full sm:w-2/3 lg:w-4/5 px-4 py-3'>
+      <div className='w-2/3 lg:w-4/5 px-4 py-3'>
         <Header user={userData} />
         {children}
       </div>

@@ -1,5 +1,6 @@
 'use client';
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { AUTHENTICATE_QUERY } from "@/app/querys/auth-query";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import Swal from 'sweetalert2';
@@ -16,9 +17,9 @@ mutation authenticate($input: AuthInput!) {
 
 export default function LoginForm () {
 
-  const [ authenticate ] = useMutation(MUTATION_LOGIN);
   const navigate = useRouter();
-
+  
+  const [ authenticate ] = useMutation(AUTHENTICATE_QUERY);
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -41,6 +42,7 @@ export default function LoginForm () {
         });
 
         Cookie.set('token', data.authenticate.token);
+        console.log(Cookie.get('token'));
 
         Swal.fire({
           text: 'Logged succesfully',
@@ -51,6 +53,7 @@ export default function LoginForm () {
           }
         })
         navigate.push('/');
+        navigate.refresh();
       }catch(e: any){
         Swal.fire({
           text: `${e.message.charAt(0).toUpperCase()}${e.message.substring(1, e.message.length)}`,

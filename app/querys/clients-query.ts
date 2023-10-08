@@ -74,3 +74,35 @@ mutation deleteClient($id: ID!) {
   deleteClient(id: $id) 
 }
 `;
+
+export const BEST_SELLERS = gql`
+  query bestSellers {
+    bestSellers {
+      total
+      seller {
+        id
+        email
+        firstName
+        lastName
+        createdAt
+      }
+    }
+  }
+`;
+
+export const BEST_CLIENTS = gql`
+  query bestClients {
+    bestClients {
+      total
+      client {
+        id
+        firstName
+        lastName
+        company
+        email
+        phone
+        seller 
+      }
+    }
+  }
+`

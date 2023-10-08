@@ -1,6 +1,6 @@
 'use client';
-import { createContext } from "react";
 import { ApolloProvider } from "@apollo/client";
+import { createContext } from "react";
 import client from "@/config/apollo";
 
 export const ApolloContext = createContext({});

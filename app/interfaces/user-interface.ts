@@ -1,3 +1,5 @@
+import { Client } from "./client-interface";
+
 export interface User {
   id: string;
   firstName: string;
@@ -5,3 +7,13 @@ export interface User {
   email: string;
   createdAt: string;
 }
+
+export interface BestSellers {
+  seller: User[];
+  total: number;
+}
+
+export interface BestClients {
+  client: Client[];
+  total: number;
+} 
